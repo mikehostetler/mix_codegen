@@ -1,86 +1,39 @@
-# MixCodegen
+# Mix Codegen
 
-**TODO: Add description**
+## Overview
+
+Mix Codegen is a library that aids in building a JSON driven code generation framework.  This is the root package, to use Mix Codegen you will need another package that implements a template.
+
+## Why? We already have this in Elixir
+Yes, we do.  I built this package to stretch my own skills (started Elixir in Oct, 2018) and because I found myself running various Mix Generator commands many times as I built apps, and I wanted a way to run those commands repeatedly, driven by code.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `mix_codegen` to your list of dependencies in `mix.exs`:
+### Add Dependency and Template Package
+
+This package is not available in Hex yet.  You will need to add it to your project via this repository's GIT URL to your list of dependencies in `mix.exs`.
+
+You will also need a template package, which can be found having the name prefixed by `mix_codegen_$packagename`.
 
 ```elixir
 def deps do
   [
-    {:mix_codegen, "~> 0.1.0"}
+    {:mix_codegen, git: "https://github.com/mikehostetler/mix_codegen.git"},
+    {:mix_codegen_ecto_migration, git: "https://github.com/mikehostetler/mix_codegen_ecto_migration.git"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/mix_codegen](https://hexdocs.pm/mix_codegen).
+### Create a Codegen Config file
 
-# Ecto
-lib/mw/domain/user.ex
-lib/mw/domain/gen/user.ex
-lib/mw/data/schema/user.ex
-lib/mw/data/schema/gen/user.ex
-lib/mw/data/model/user.ex
-lib/mw/data/schema/gen/user.ex
+Create a file with the name `codegen.json` in your Mix Project's `config/` folder with the following format:
 
-# Migration & Seeds
-priv/repo/migrations/20181021153457_add_user_table.exs
-mw/priv/repo/seed/user.ex
-mw/priv/repo/seed/gen/user.ex
+```json
+{}
+```
 
-# Tests
-mw/test/domain/user_test.exs
-mw/test/data/schema/user_test.exs
-mw/test/data/model/user_test.exs
+### Run the Codegen
 
+With a `codegen.json` file created, you can run your codegen with the following command:
 
-
-# Phoenix
-lib/mw_web/controllers/user_controller.ex
-lib/mw_web/templates/user/edit.html.eex
-lib/mw_web/templates/user/form.html.eex
-lib/mw_web/templates/user/index.html.eex
-lib/mw_web/templates/user/new.html.eex
-lib/mw_web/templates/user/show.html.eex
-lib/mw_web/views/user_view.ex
-test/mw_web/controllers/user_controller_test.exs
-
-
-
-mix ecto.gen.domain Route Route route method:string slug:string controller:string action:string
-
-mix codegen.
-
-mix skeleton.gen.html TestLib User/user users name:string email:string
-mix codegen.gen.model User/user users name:string email:string
-
-# Install / Uninstall
-mix archive.install hex mix_codegen
-mix archive.install hex mix_codegen_ecto_migration
-
-# CLI API
-mix codegen
-
-mix codegen.ecto.migration table
-mix codegen.mw.model lib_name resource/resource plural_name field:type field:type
-
-# Codegen based on input file
-mix codegen                       # Print Help
-mix codegen --input codegen.json  # Run Batched Codegen
-{
-  "codegen.ecto.migration": [
-    "add_table -r Mw.Repo",
-    "add_blerg -r Mw.Repo"
-  ],
-  "codegen.mw.model": [
-    ["lib_name", "resource/resource", "plural_name", "field:type", "field:type"]
-    ["lib_two", "resource/resource", "plural_name", "field:type", "field:type"]
-  ]
-}
-
-* Primary Codegen takes file input, parses the JSON and makes multiple calls to:
-`Mix.Tasks.Codegen.XXX.run(json_string_args)`
+`mix codegen run`
