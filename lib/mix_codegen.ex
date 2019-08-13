@@ -2,8 +2,6 @@ defmodule MixCodegen do
   @moduledoc """
   Documentation for MixCodegen.
   """
-  require IEx
-
   alias MixCodegen.Config, as: CodeConfig
 
   @doc """
