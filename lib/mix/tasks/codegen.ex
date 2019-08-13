@@ -42,11 +42,12 @@ defmodule Mix.Tasks.Codegen do
   @doc "Run the Mix.Codegen Task, parsing arguments and delegating to other methods to execute"
   @spec run(map) :: none()
   def run(args) do
-    IO.puts("Passed Args: #{args}")
+    # IO.puts("Passed Args: #{args}")
 
     OptionParser.parse(args, strict: @switches, aliases: @aliases)
-    |> IO.inspect(label: "Parsed Args")
+    # |> IO.inspect(label: "Parsed Args 1")
     |> parse_command()
+    # |> IO.inspect(label: "Parsed Args 2")
     |> run_command()
 
     exit(:normal)
@@ -54,8 +55,8 @@ defmodule Mix.Tasks.Codegen do
 
   @doc "Parse the incoming parameters to Mix.Codegen"
   @spec parse_command({any(), any(), any()}) :: :help | :run
-  def parse_command({[], ["run"], _}), do: {:run, :default}
-  def parse_command({[input_file: file], ["run"], _}), do: {:run, file}
+  def parse_command({[], [], _}), do: {:run, :default}
+  def parse_command({[input_file: file], [], _}), do: {:run, file}
   def parse_command({_, _, _}), do: :help
 
   @doc "Execute either the :help or :run commands of Mix.Codegen"

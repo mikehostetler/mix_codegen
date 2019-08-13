@@ -3,10 +3,10 @@ defmodule MixCodegen.Config do
   Read and load a Mix Codegen Configuration into a Map
   """
   defmodule ConfigFile do
-    @filename "codegen.json"
+    @filename "codegen.exs"
     @spec custom_config_file() :: String.t()
     def custom_config_file,
-      do: Application.get_env(:mix_codegen, :config_file, "#{System.cwd()}/config/#{@filename}")
+      do: Application.get_env(:mix_codegen, :config_file, "#{File.cwd!()}/config/#{@filename}")
 
     @spec default_config_file() :: String.t()
     def default_config_file, do: Path.expand("#{__DIR__}/../../config/#{@filename}")
@@ -29,8 +29,10 @@ defmodule MixCodegen.Config do
   @spec read_config_file(String.t()) :: map
   defp read_config_file(config_file) do
     if File.exists?(config_file) do
-      case File.read!(config_file) |> Jason.decode() do
-        {:ok, config} -> config
+      # case File.read!(config_file) |> Jason.decode() do
+      case Config.Reader.read!(config_file) do
+        [mix_codegen: [config]] -> config
+        # {:ok, config} -> config
         _ -> raise CodegenConfigParseError
       end
     else
@@ -39,7 +41,7 @@ defmodule MixCodegen.Config do
   end
 
   @spec find_config_file(:default) :: String.t()
-  defp find_config_file(:default) do
+  def find_config_file(:default) do
     cond do
       File.exists?(config_file = ConfigFile.custom_config_file()) -> config_file
       File.exists?(config_file = ConfigFile.default_config_file()) -> config_file
@@ -49,7 +51,7 @@ defmodule MixCodegen.Config do
   end
 
   @spec find_config_file(String.t()) :: String.t()
-  defp find_config_file(file_path) do
+  def find_config_file(file_path) do
     Path.expand(file_path)
     |> File.exists?()
     |> err_no_config_file(file_path)
